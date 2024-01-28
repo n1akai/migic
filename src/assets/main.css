@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --gold: #ffd700;
+  --gold-50: #fef1a7;
+  --white: #ffffff;
+  --black: #000000;
+  --cryo: #0fdcf8;
+  --light-dark: #202020;
+}
+
+body {
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.4;
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/migicl.appspot.com/o/1174308.jpg?alt=media&token=984131d5-dfbe-4439-9c77-cc8ec5cfae79");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  min-height: 100vh;
+  height: 100%;
+}
+
+.navigate-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  color: var(--white);
+  text-decoration: none;
+  background-color: var(--gold);
+}
