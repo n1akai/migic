@@ -1,8 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { RouterLink } from 'vue-router';
 import { useNotification } from "@kyvg/vue3-notification";
-import { child, getDatabase, set, push, ref as refDb, onValue } from "firebase/database";
+import { child, getDatabase, set, push, ref as refDb, onValue, remove } from "firebase/database";
 import { getRuns, getNukes } from "@/utils";
 
 const db = getDatabase();
@@ -19,7 +19,6 @@ const add = async () => {
       avatar: avatar.value,
       uid: uid.value,
       country: country.value,
-      rank: rank.value,
       data: data.value,
       link: facebookPostLink.value
     });
@@ -41,12 +40,13 @@ const participant = ref("");
 const avatar = ref("");
 const uid = ref("");
 const country = ref("morocco");
-const rank = ref("1");
+
 const challengeType = ref("speedrun");
 const facebookPostLink = ref("");
 const data = ref({});
 
 const selected = ref({});
+const deleteSecelted = ref({});
 
 const runs = ref([]);
 const reference = refDb(getDatabase(), "runs");
@@ -81,8 +81,69 @@ const update = async () => {
       type: "error"
     });
   }
-}
+};
 
+const sortRanks = (array) => {
+  let counter = 1;
+  for (let i = 0; i < array.length; i++) {
+    array[i].rank = counter;
+    if (array[i + 1] && array[i].data.damage != array[i + 1].data.damage) {
+      counter++;
+    }
+  }
+  return array;
+};
+
+const ganyuNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "ganyu"));
+});
+const c0HutaoNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c0hutao"));
+});
+const c3HutaoNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c3hutao"));
+});
+const c5HutaoNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c5hutao"));
+});
+const c0EulaNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c0eula"));
+});
+const c6EulaNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c6eula"));
+});
+const childNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "childe"));
+});
+const c0RaidenNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c0raiden"));
+});
+const c2RaidenNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c2raiden"));
+});
+const c3RaidenNukes = computed(() => {
+  return sortRanks(nukes.value.filter(e => e.data.character == "c3raiden"));
+});
+
+
+const deleteOne = async () => {
+  const type = deleteSecelted.value.data.time ? "runs" : "nukes";
+  const theRef = child(refDb(db), type);
+  try {
+    await remove(child(theRef, deleteSecelted.value.id));
+    notify({
+      title: "Done!",
+      text: "Deleted Successfully!",
+      type: "success"
+    });
+  } catch (error) {
+    notify({
+      title: "Error!",
+      text: `${error.message}`,
+      type: "error"
+    });
+  }
+};
 </script>
 
 <template>
@@ -108,10 +169,6 @@ const update = async () => {
           <option value="morocco">Morocco</option>
           <option value="iraq">Iraq</option>
         </select>
-      </div>
-      <div class="input-group">
-        <label for="rank">Rank</label>
-        <input id="rank" type="number" required v-model="rank" />
       </div>
       <div class="input-group">
         <label for="facebookPostLink">FB Post Link</label>
@@ -164,9 +221,63 @@ const update = async () => {
               item.data.time }}
             </option>
           </optgroup>
-          <optgroup label="Nukes">
-            <option :value="item" v-for="item in nukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
+          <optgroup label="Nukes"></optgroup>
+          <optgroup label="Ganyu">
+            <option :value="item" v-for="item in ganyuNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
               item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Hu Tao">
+            <option :value="item" v-for="item in c0HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C3 Hu Tao">
+            <option :value="item" v-for="item in c3HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C5 Hu Tao">
+            <option :value="item" v-for="item in c5HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Eula">
+            <option :value="item" v-for="item in c0EulaNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C6 Eula">
+            <option :value="item" v-for="item in c6EulaNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="Child">
+            <option :value="item" v-for="item in childNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
+              item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Raiden">
+            <option :value="item" v-for="item in c0RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C2 Raiden">
+            <option :value="item" v-for="item in c2RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C3 Raiden">
+            <option :value="item" v-for="item in c3RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
             </option>
           </optgroup>
         </select>
@@ -189,10 +300,6 @@ const update = async () => {
           <option value="morocco">Morocco</option>
           <option value="iraq">Iraq</option>
         </select>
-      </div>
-      <div class="input-group">
-        <label for="rank">Rank</label>
-        <input id="rank" type="number" required v-model="selected.rank" />
       </div>
       <div class="input-group">
         <label for="facebookPostLink">FB Post Link</label>
@@ -226,6 +333,80 @@ const update = async () => {
         </div>
       </div>
       <button @click="update">Update</button>
+    </div>
+
+    <div class="form">
+      <h3>Deleting Form</h3>
+      <div class="input-group">
+        <label for="speedrun-nuke">Select Speedrun/Nuke</label>
+        <select id="speedrun-nuke" required v-model="deleteSecelted">
+          <optgroup label="Speedruns">
+            <option :value="item" v-for="item in runs" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
+              item.data.time }}
+            </option>
+          </optgroup>
+          <optgroup label="Nukes"></optgroup>
+          <optgroup label="Ganyu">
+            <option :value="item" v-for="item in ganyuNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
+              item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Hu Tao">
+            <option :value="item" v-for="item in c0HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C3 Hu Tao">
+            <option :value="item" v-for="item in c3HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C5 Hu Tao">
+            <option :value="item" v-for="item in c5HutaoNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Eula">
+            <option :value="item" v-for="item in c0EulaNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C6 Eula">
+            <option :value="item" v-for="item in c6EulaNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="Child">
+            <option :value="item" v-for="item in childNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} - {{
+              item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C0 Raiden">
+            <option :value="item" v-for="item in c0RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C2 Raiden">
+            <option :value="item" v-for="item in c2RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+          <optgroup label="C3 Raiden">
+            <option :value="item" v-for="item in c3RaidenNukes" :key="item.id">#{{ item.rank }} - {{ item.participant }} -
+              {{
+                item.data.damage }}
+            </option>
+          </optgroup>
+        </select>
+      </div>
+      <button @click="deleteOne">Delete</button>
     </div>
   </div>
 </template>

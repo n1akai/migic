@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const props = defineProps({
   nuke: {
     type: Object,
@@ -14,9 +14,13 @@ const flag = ref("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag
 if (props.nuke.country != "morocco") {
   flag.value = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Iraq.svg/1200px-Flag_of_Iraq.svg.png";
 }
+
+const link = computed(() => {
+  return props.nuke.link == "" ? "#" : props.run.link;
+});
 </script>
 <template>
-  <a :href="props.nuke.link" target="_blank">
+  <a :href="link">
     <div class="card">
       <img :src="props.namecard" />
       <div class="container">
@@ -68,7 +72,7 @@ a {
   border-radius: 8px;
   color: var(--white);
   font-weight: 500;
-  flex-direction: column;
+  flex-direction: row;
   position: absolute;
   top: 0;
   left: 0;
@@ -82,14 +86,10 @@ a {
     min-width: 506px;
     height: 134px;
   }
-
-  .card .container {
-    flex-direction: row;
-  }
 }
 
 .card .info-part {
-  width: 25%;
+  flex-basis: 25%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,12 +106,13 @@ a {
 .card .info-part p {
   padding-top: 0.4rem;
   font-size: 14px;
+  text-align: center;
 }
 
 
 
 .card .damage-part {
-  width: 50%;
+  flex-basis: 50%;
   padding: 8px;
   display: flex;
   justify-content: center;
@@ -132,7 +133,7 @@ a {
   padding: 8px;
   display: flex;
   flex-direction: column;
-  width: 25%;
+  flex-basis: 25%;
 }
 
 .card .rank-part .rank {

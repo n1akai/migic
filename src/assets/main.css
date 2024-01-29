@@ -25,6 +25,7 @@ body {
   background-position: center center;
   min-height: 100vh;
   height: 100%;
+  background-attachment: fixed;
 }
 
 .navigate-button {

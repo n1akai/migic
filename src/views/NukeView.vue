@@ -13,7 +13,15 @@ onValue(reference, s => {
 });
 
 const filtedNukes = computed(() => {
-  return nukes.value.filter(e => e.data.character == selectedChracter.value);
+  const filtedNukesAll = nukes.value.filter(e => e.data.character == selectedChracter.value);
+  let counter = 1;
+  for (let i = 0; i < filtedNukesAll.length; i++) {
+    filtedNukesAll[i].rank = counter;
+    if (filtedNukesAll[i + 1] && filtedNukesAll[i].data.damage != filtedNukesAll[i + 1].data.damage) {
+      counter++;
+    }
+  }
+  return filtedNukesAll;
 });
 
 const nameCard = computed(() => {

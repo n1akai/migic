@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const props = defineProps({
   run: {
     type: Object,
@@ -11,9 +11,13 @@ const flag = ref("https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag
 if (props.run.country != "morocco") {
   flag.value = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Iraq.svg/1200px-Flag_of_Iraq.svg.png";
 }
+
+const link = computed(() => {
+  return props.run.link == "" ? "#" : props.run.link;
+});
 </script>
 <template>
-  <a :href="props.run.link" target="_blank">
+  <a :href="link">
     <div class="card">
       <div class="info-part">
         <img :src="props.run.avatar" />
@@ -36,6 +40,10 @@ if (props.run.country != "morocco") {
 
 <style scoped>
 a {
+  background-image: url(https://firebasestorage.googleapis.com/v0/b/migicl.appspot.com/o/abyss.png?alt=media&token=e5a8d20b-27e7-4a6b-8836-51d9aad4b190);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,20 +53,22 @@ a {
   margin: 6px 0;
   border-radius: 8px;
   overflow: hidden;
+  width: 100%;
 }
 
 .card {
-  background-image: url(https://firebasestorage.googleapis.com/v0/b/migicl.appspot.com/o/abyss.png?alt=media&token=e5a8d20b-27e7-4a6b-8836-51d9aad4b190);
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
   display: flex;
   color: var(--white);
   font-weight: 500;
-  flex-direction: column;
+  flex-direction: row;
+  width: 100%;
 }
 
 @media (min-width: 506px) {
+  a {
+    width: auto;
+  }
+
   .card {
     width: 100%;
     min-width: 506px;
@@ -68,7 +78,7 @@ a {
 }
 
 .card .info-part {
-  width: 25%;
+  flex-basis: 25%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,12 +95,13 @@ a {
 .card .info-part p {
   padding-top: 0.4rem;
   font-size: 14px;
+  text-align: center;
 }
 
 
 
 .card .time-part {
-  width: 50%;
+  flex-basis: 50%;
   flex: 1;
   padding: 8px;
   display: flex;
@@ -111,7 +122,7 @@ a {
 }
 
 .card .rank-part {
-  width: 25%;
+  flex-basis: 25%;
   padding: 8px;
   display: flex;
   flex-direction: column;
