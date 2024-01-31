@@ -5,7 +5,7 @@ import { getDatabase, ref as dbRef, onValue } from "firebase/database";
 import { getRuns } from "@/utils";
 
 const runs = ref([]);
-const reference = dbRef(getDatabase(), "runs");
+const reference = dbRef(getDatabase(), "runs2");
 onValue(reference, s => {
   const data = s.val();
   runs.value = [];
@@ -14,7 +14,7 @@ onValue(reference, s => {
 </script>
 <template>
   <div class="challenge-description">
-    4.3 Abyss Chamber 1 First Half: 01/26 ~ 01/30
+    4.3 Abyss Chamber 2 First Half: 02/01 ~ 02/05
   </div>
   <div class="speed-runs" v-if="runs.length > 0">
     <SpeedRun v-for="run in runs" :key="run.id" :run="run" />

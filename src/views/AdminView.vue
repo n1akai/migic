@@ -9,7 +9,7 @@ const db = getDatabase();
 const { notify } = useNotification();
 
 const add = async () => {
-  const type = challengeType.value == "speedrun" ? "runs" : "nukes";
+  const type = challengeType.value == "speedrun" ? "runs2" : "nukes";
   const theRef = child(refDb(db), type);
   const newOne = push(theRef);
   try {
@@ -49,7 +49,7 @@ const selected = ref({});
 const deleteSecelted = ref({});
 
 const runs = ref([]);
-const reference = refDb(getDatabase(), "runs");
+const reference = refDb(getDatabase(), "runs2");
 onValue(reference, s => {
   const data = s.val();
   runs.value = [];
@@ -65,7 +65,7 @@ onValue(reference2, s => {
 });
 
 const update = async () => {
-  const type = selected.value.data.time ? "runs" : "nukes";
+  const type = selected.value.data.time ? "runs2" : "nukes";
   const theRef = child(refDb(db), type);
   try {
     await set(child(theRef, selected.value.id), selected.value);
@@ -127,7 +127,7 @@ const c3RaidenNukes = computed(() => {
 
 
 const deleteOne = async () => {
-  const type = deleteSecelted.value.data.time ? "runs" : "nukes";
+  const type = deleteSecelted.value.data.time ? "runs2" : "nukes";
   const theRef = child(refDb(db), type);
   try {
     await remove(child(theRef, deleteSecelted.value.id));
