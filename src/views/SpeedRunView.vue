@@ -5,22 +5,27 @@ import { getDatabase, ref as dbRef, onValue } from "firebase/database";
 import { getRuns } from "@/utils";
 
 const runs = ref([]);
+const loading = ref(true);
 const reference = dbRef(getDatabase(), "runs2");
 onValue(reference, s => {
   const data = s.val();
   runs.value = [];
   runs.value = getRuns(data);
+  loading.value = false;
 });
 </script>
 <template>
   <div class="challenge-description">
-    4.3 Abyss Chamber 2 First Half: 02/01 ~ 02/05
+    4.4 Abyss Chamber 2 First Half: 02/01 ~ 02/05
   </div>
   <div class="speed-runs" v-if="runs.length > 0">
     <SpeedRun v-for="run in runs" :key="run.id" :run="run" />
   </div>
-  <div v-else class="loading">
+  <div v-else-if="loading" class="loading">
     <div class="loader"></div>
+  </div>
+  <div class="no-runs" v-else>
+    0 speedrun
   </div>
   <ul class="pagination" v-if="0 > 1">
     <li class="active">1</li>
@@ -95,5 +100,19 @@ onValue(reference, s => {
   100% {
     transform: rotate(1turn)
   }
+}
+
+.no-runs {
+  text-align: center;
+  font-size: 32px;
+  color: #fff;
+  background-color: var(--light-dark);
+  width: fit-content;
+  margin: auto;
+  font-weight: 500;
+  padding: 20px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 </style>
